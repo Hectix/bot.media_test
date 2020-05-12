@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
-    <BotMediaTest :one="1" :two="2"/>
-  </div>
+    <div id="app">
+        <BotMediaTest :one="1" :two="2"/>
+    </div>
 </template>
 
 <script>
