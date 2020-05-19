@@ -8,7 +8,7 @@
         <table>
             <thead class="weekdays">
                 <tr>
-                    <th v-for="(day, index) in weekDays" :key="index">{{ String(day).split("")[0] + String(day).split("")[1] }}</th>
+                    <th v-for="(day, index) in weekDays" :key="index">{{ day.substring(0, 2) }}</th>
                 </tr>
             </thead>
             <tbody class="days">
