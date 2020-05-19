@@ -1,16 +1,22 @@
 <template>
     <div id="app">
-        <BotMediaTest :one="1" :two="2"/>
+        <date-picker v-model="date" :highlight-today="true" :range="true" ref="picker" />
+        <p>Date: {{ date }}</p>
     </div>
 </template>
 
 <script>
-import BotMediaTest from "./components/BotMediaTest.vue";
+import DatePicker from "./components/DatePicker.vue";
 
 export default {
     name: "App",
     components: {
-        BotMediaTest
-    }
+        DatePicker
+    },
+    data() {
+        return {
+            date: [new Date(1589278277000), new Date(1589378277000)]
+        };
+    },
 };
 </script>
