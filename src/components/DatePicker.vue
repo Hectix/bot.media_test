@@ -73,7 +73,7 @@ export default {
         },
         /**
          * Sets the date
-         * @param {Object} date
+         * @param {Date} date
          */
         setDate(date) {
             if (this.range) {
@@ -87,8 +87,8 @@ export default {
                             this.selectedTo = date;
                             this.$emit("input", [this.selected, this.selectedTo]);
                         } else {
+                            this.selectedTo = this.selected;
                             this.selected = date;
-                            this.selectedTo = "";
                         }
                     }
                 } else {

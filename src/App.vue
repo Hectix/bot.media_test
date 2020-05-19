@@ -15,7 +15,7 @@ export default {
     },
     data() {
         return {
-            date: [new Date(1589278277000), new Date(1589378277000)]
+            date: [new Date(1588978277000), new Date(1589578277000)]
         };
     },
 };
