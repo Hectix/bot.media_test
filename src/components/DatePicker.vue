@@ -45,9 +45,8 @@ export default {
         return {
             dateContext: new Date(),
             weekDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-            weekReversed: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].reverse(),
-            selected: Array.isArray(this.value) && this.value.length ? this.value[0].setHours(0, 0, 0, 0) : "",
-            selectedTo: Array.isArray(this.value) && this.value.length && this.value[1] ? this.value[1].setHours(0, 0, 0, 0) : "",
+            selected: Array.isArray(this.value) && this.value.length ? new Date(this.value[0]).setHours(0, 0, 0, 0) : "",
+            selectedTo: this.range && Array.isArray(this.value) && this.value.length && this.value[1] ? new Date(this.value[1]).setHours(0, 0, 0, 0) : "",
         };
     },
     methods: {
@@ -73,15 +72,15 @@ export default {
                     if (this.selectedTo) {
                         this.selected = date;
                         this.selectedTo = "";
-                        this.$emit("input", [this.selected.getTime()]);
+                        this.$emit("input", []);
                     } else {
                         if (new Date(date) > new Date(this.selected)) {
                             this.selectedTo = date;
-                            this.$emit("input", [this.selected.getTime(), this.selectedTo.getTime()]);
+                            this.$emit("input", [this.selected, this.selectedTo]);
                         } else if(new Date(date) < new Date(this.selected)) {
                             this.selectedTo = this.selected;
                             this.selected = date;
-                            this.$emit("input", [this.selected.getTime(), this.selectedTo.getTime()]);
+                            this.$emit("input", [this.selected, this.selectedTo]);
                         }
                     }
                 } else {
@@ -89,7 +88,7 @@ export default {
                 }
             } else {
                 this.selected = date;
-                this.$emit("input", date.getTime());
+                this.$emit("input", date);
             }
         }
     },
@@ -133,14 +132,22 @@ export default {
             // Insert dates from next month into array, which is later used to populate days array
             const nextMonthDays = [];
             const nextMonthDate = new Date(this.dateContext.getFullYear(), this.dateContext.getMonth() + 1, 0);
-            const endWeekdayIndex = this.weekReversed.indexOf(this.endWeekday);
-            for (let i = 1; i <= endWeekdayIndex; i++) {
+            const endWeekdayIndex = () => {
+                const weekdayIndex = this.weekDays.length - 1 - this.weekDays.indexOf(this.endWeekday);
+
+                if (this.daysInCurrentMonth.length === 28) { // February with 28 days
+                    return weekdayIndex + (prevMonthDays.length === 0 ? 14 : 7);
+                } else if (this.daysInCurrentMonth.length === 31) { // Months which have 31 days and start on Saturday or Sunday
+                    return weekdayIndex + (prevMonthDays.length < 5 ? 7 : 0);
+                }
+
+                return weekdayIndex + (prevMonthDays.length <= 5 ? 7 : 0);
+            };
+            for (let i = 1; i <= endWeekdayIndex(); i++) {
                 nextMonthDays.push(new Date(nextMonthDate.setDate(nextMonthDate.getDate() + 1)));
             }
 
-            const pushDays = (day, isOtherMonth) => {
-                const date = new Date(day);
-
+            const pushDays = (date, isOtherMonth) => {
                 days.push({
                     isToday: date.getTime() === this.today && this.highlightToday,
                     isSelected: date.getTime() === new Date(this.selected).getTime(),
@@ -154,13 +161,13 @@ export default {
             };
 
             // Populate days array with previous month days
-            prevMonthDays.reverse().forEach(day => pushDays(day, true));
+            prevMonthDays.reverse().forEach(date => pushDays(date, true));
 
             // Populate days array with current month days
-            this.daysInCurrentMonth.forEach(day => pushDays(day));
+            this.daysInCurrentMonth.forEach(date => pushDays(date));
 
             // Populate days array with next month days
-            nextMonthDays.forEach(day => pushDays(day, true));
+            nextMonthDays.forEach(date => pushDays(date, true));
 
             return days;
         },

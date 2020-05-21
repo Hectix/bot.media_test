@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <date-picker v-model="date" :highlight-today="true" :range="true" ref="picker" />
-        <p>Date: {{ date }}</p>
+        <p><strong>Date:</strong> {{ date.toString() }}</p>
     </div>
 </template>
 
@@ -15,7 +15,7 @@ export default {
     },
     data() {
         return {
-            date: [new Date(1588978277000), new Date(1589578277000)]
+            date: []
         };
     },
 };
