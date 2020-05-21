@@ -20,3 +20,9 @@ export default {
     },
 };
 </script>
+
+<style>
+    #app {
+        width: 320px;
+    }
+</style>
